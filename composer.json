@@ -1,0 +1,9 @@
+{
+  "name": "macdabby/lightning-layouts",
+  "type": "library",
+  "description": "Adds a layout editor and renderer for pages.",
+  "version": "1.0.0",
+  "require": {
+    "components/jqueryui": "^1.12"
+  }
+}
