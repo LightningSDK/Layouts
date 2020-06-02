@@ -6,10 +6,10 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "git@github.com:macdabby/lightning-foundation"
+      "url": "git@github.com:macdabby/lightning-jqueryui"
     }
   ],
   "require": {
-    "macdabby/lightning-foundation": "^1.12"
+    "macdabby/lightning-jqueryui": "^1.12"
   }
 }
