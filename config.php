@@ -16,4 +16,9 @@ return [
             'admin/layouts' => \macdabby\lightning_layouts\Pages\Admin\Layouts::class,
         ],
     ],
+    'markup' => [
+        'renderers' => [
+            'layout' => \macdabby\lightning_layouts\View\Layout::class,
+        ],
+    ],
 ];
