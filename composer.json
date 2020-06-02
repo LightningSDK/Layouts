@@ -10,6 +10,6 @@
     }
   ],
   "require": {
-    "macdabby/lightning-jqueryui": "^1.12"
+    "macdabby/lightning-jqueryuis": "dev-master"
   }
 }
