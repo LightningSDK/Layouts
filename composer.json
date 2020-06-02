@@ -3,12 +3,6 @@
   "type": "library",
   "description": "Adds a layout editor and renderer for pages.",
   "version": "1.0.0",
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "git@github.com:macdabby/lightning-jqueryui"
-    }
-  ],
   "require": {
     "macdabby/lightning-jqueryui": "~1.12"
   }
