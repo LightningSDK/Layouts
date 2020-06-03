@@ -14,7 +14,7 @@ class LayoutEditor extends Page {
 
     protected $layout;
 
-    protected $page = ['layout_editor', 'Layouts'];
+    protected $page = ['layout_editor', 'macdabby/lightning-layouts'];
 
     public function hasAccess() {
         return ClientUser::requireAdmin();
@@ -25,7 +25,7 @@ class LayoutEditor extends Page {
             $this->layout = Layout::loadById($id);
         }
 
-        JS::startup('lightning.modules.layouts.initEditor();', ['Layouts' => 'Layouts.js']);
+        JS::startup('lightning.modules.layouts.initEditor();', ['macdabby/lightning-layouts' => 'Layouts.js']);
         JS::set('modules.layouts.editors', [
             'main_layout' => [
                 'type' => 'vertical',
