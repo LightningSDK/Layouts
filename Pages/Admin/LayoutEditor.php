@@ -1,8 +1,8 @@
 <?php
 
-namespace macdabby\lightning_layouts\Pages\Admin;
+namespace lightningsdk\layouts\Pages\Admin;
 
-use macdabby\lightning_layouts\Model\Layout;
+use lightningsdk\layouts\Model\Layout;
 use Lightning\Tools\ClientUser;
 use Lightning\Tools\Request;
 use Lightning\View\JS;
@@ -14,7 +14,7 @@ class LayoutEditor extends Page {
 
     protected $layout;
 
-    protected $page = ['layout_editor', 'macdabby/lightning-layouts'];
+    protected $page = ['layout_editor', 'lightningsdk/layouts'];
 
     public function hasAccess() {
         return ClientUser::requireAdmin();
@@ -38,7 +38,7 @@ class LayoutEditor extends Page {
             ];
         }
 
-        JS::startup('lightning.modules.layouts.initEditor();', ['macdabby/lightning-layouts' => 'Layouts.js']);
+        JS::startup('lightning.modules.layouts.initEditor();', ['lightningsdk/layouts' => 'Layouts.js']);
         JS::set('modules.layouts.editors', $body);
     }
 }

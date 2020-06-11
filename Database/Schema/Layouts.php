@@ -1,6 +1,6 @@
 <?php
 
-namespace macdabby\lightning_layouts\Database\Schema;
+namespace lightningsdk\layouts\Database\Schema;
 
 use Lightning\Database\Schema;
 

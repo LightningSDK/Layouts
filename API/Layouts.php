@@ -1,11 +1,11 @@
 <?php
 
-namespace macdabby\lightning_layouts\API;
+namespace lightningsdk\layouts\API;
 
 use Lightning\Tools\ClientUser;
 use Lightning\Tools\Output;
 use Lightning\Tools\Request;
-use macdabby\lightning_layouts\Model\Layout as LayoutModel;
+use lightningsdk\layouts\Model\Layout as LayoutModel;
 use Lightning\View\API;
 
 class Layouts extends API {

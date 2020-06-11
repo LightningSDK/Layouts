@@ -1,6 +1,6 @@
 <?php
 
-namespace macdabby\lightning_layouts\Model;
+namespace lightningsdk\layouts\Model;
 
 use Lightning\Model\BaseObject;
 

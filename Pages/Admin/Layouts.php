@@ -1,6 +1,6 @@
 <?php
 
-namespace macdabby\lightning_layouts\Pages\Admin;
+namespace lightningsdk\layouts\Pages\Admin;
 
 use Lightning\Pages\Table;
 use Lightning\Tools\ClientUser;

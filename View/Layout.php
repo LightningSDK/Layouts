@@ -1,9 +1,9 @@
 <?php
 
-namespace macdabby\lightning_layouts\View;
+namespace lightningsdk\layouts\View;
 
 use Lightning\View\HTMLEditor\Markup;
-use macdabby\lightning_layouts\Model\Layout as LayoutModel;
+use lightningsdk\layouts\Model\Layout as LayoutModel;
 use Lightning\Tools\ClientUser;
 
 class Layout {
