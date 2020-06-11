@@ -2,9 +2,9 @@
 
 namespace lightningsdk\layouts\View;
 
-use Lightning\View\HTMLEditor\Markup;
+use lightningsdk\core\View\HTMLEditor\Markup;
 use lightningsdk\layouts\Model\Layout as LayoutModel;
-use Lightning\Tools\ClientUser;
+use lightningsdk\core\Tools\ClientUser;
 
 class Layout {
     public static function renderMarkup($options, $vars) {

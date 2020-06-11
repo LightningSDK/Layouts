@@ -2,10 +2,10 @@
 
 namespace lightningsdk\layouts\Pages\Admin;
 
-use Lightning\Pages\Table;
-use Lightning\Tools\ClientUser;
-use Lightning\Tools\Navigation;
-use Lightning\Tools\Request;
+use lightningsdk\core\Pages\Table;
+use lightningsdk\core\Tools\ClientUser;
+use lightningsdk\core\Tools\Navigation;
+use lightningsdk\core\Tools\Request;
 
 class Layouts extends Table {
     const TABLE = 'layout';

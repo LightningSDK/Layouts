@@ -2,7 +2,7 @@
 
 namespace lightningsdk\layouts\Database\Schema;
 
-use Lightning\Database\Schema;
+use lightningsdk\core\Database\Schema;
 
 class Layouts extends Schema {
     const TABLE = 'layouts';

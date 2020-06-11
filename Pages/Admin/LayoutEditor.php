@@ -3,10 +3,10 @@
 namespace lightningsdk\layouts\Pages\Admin;
 
 use lightningsdk\layouts\Model\Layout;
-use Lightning\Tools\ClientUser;
-use Lightning\Tools\Request;
-use Lightning\View\JS;
-use Lightning\View\Page;
+use lightningsdk\core\Tools\ClientUser;
+use lightningsdk\core\Tools\Request;
+use lightningsdk\core\View\JS;
+use lightningsdk\core\View\Page;
 
 class LayoutEditor extends Page {
 

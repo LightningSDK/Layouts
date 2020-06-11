@@ -2,11 +2,11 @@
 
 namespace lightningsdk\layouts\API;
 
-use Lightning\Tools\ClientUser;
-use Lightning\Tools\Output;
-use Lightning\Tools\Request;
+use lightningsdk\core\Tools\ClientUser;
+use lightningsdk\core\Tools\Output;
+use lightningsdk\core\Tools\Request;
 use lightningsdk\layouts\Model\Layout as LayoutModel;
-use Lightning\View\API;
+use lightningsdk\core\View\API;
 
 class Layouts extends API {
 

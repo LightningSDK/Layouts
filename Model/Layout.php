@@ -2,7 +2,7 @@
 
 namespace lightningsdk\layouts\Model;
 
-use Lightning\Model\BaseObject;
+use lightningsdk\core\Model\BaseObject;
 
 class Layout extends BaseObject {
     const TABLE = 'layout';
