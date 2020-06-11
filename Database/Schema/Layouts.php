@@ -10,6 +10,7 @@ class Layouts extends Schema {
     public function getColumns() {
         return [
             'layout_id' => $this->autoincrement(),
+            'name' => $this->varchar(64),
             'structure' => $this->text(),
         ];
     }

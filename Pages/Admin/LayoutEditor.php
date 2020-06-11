@@ -2,7 +2,7 @@
 
 namespace macdabby\lightning_layouts\Pages\Admin;
 
-use Layouts\Model\Layout;
+use macdabby\lightning_layouts\Model\Layout;
 use Lightning\Tools\ClientUser;
 use Lightning\Tools\Request;
 use Lightning\View\JS;
@@ -23,43 +23,22 @@ class LayoutEditor extends Page {
     public function get() {
         if ($id = Request::get('id', Request::TYPE_INT)) {
             $this->layout = Layout::loadById($id);
+            $body = json_decode($this->layout->structure, true);
+            $body['layout_id'] = $this->layout->id;
+            $body = [
+                'main_layout' => $body,
+            ];
+        } else {
+            $body = [
+                'main_layout' => [
+                    'layout_id' => 0,
+                    'type' => 'horizontal',
+                    'conntainers' => [],
+                ],
+            ];
         }
 
         JS::startup('lightning.modules.layouts.initEditor();', ['macdabby/lightning-layouts' => 'Layouts.js']);
-        JS::set('modules.layouts.editors', [
-            'main_layout' => [
-                'type' => 'vertical',
-                'containers'  => [
-                    [
-                        'type' => 'content',
-                        'value' => 'top content',
-                    ],
-                    [
-                        'type' => 'horizontal',
-                        'containers' => [
-                            [
-                                'width' => 6,
-                                'type' => 'content',
-                                'value' => '{{body}}',
-                            ],
-                            [
-                                'width' => 3,
-                                'type' => 'content',
-                                'value' => '{{widget id="1"}}',
-                            ],
-                            [
-                                'width' => 3,
-                                'type' => 'content',
-                                'value' => '{{widget  id="2"}}',
-                            ],
-                        ],
-                    ],
-                    [
-                        'type' => 'content',
-                        'value' => 'bottom content',
-                    ],
-                ],
-            ],
-        ]);
+        JS::set('modules.layouts.editors', $body);
     }
 }

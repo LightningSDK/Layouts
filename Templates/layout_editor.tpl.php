@@ -30,5 +30,3 @@
 <div class="layout_editor" id="main_layout">
 
 </div>
-
-<button name="save" value="Save" onclick="function(){lightning.layouts.save('layout_editor');}"></button>

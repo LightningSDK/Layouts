@@ -14,6 +14,7 @@ return [
         'static' => [
             'admin/layouts/edit' => \macdabby\lightning_layouts\Pages\Admin\LayoutEditor::class,
             'admin/layouts' => \macdabby\lightning_layouts\Pages\Admin\Layouts::class,
+            'api/layouts' => \macdabby\lightning_layouts\API\Layouts::class,
         ],
     ],
     'markup' => [

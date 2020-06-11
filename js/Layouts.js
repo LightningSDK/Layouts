@@ -25,7 +25,9 @@
                 "<button class='button button-small contents'>Contents</button>" +
                 "</div>" +
                 "</div>";
-            var editors = $(".layout_editor").each(function(){
+            var editors = $(".layout_editor")
+                .addClass('layout_container')
+                .each(function(){
                 var id = $(this).attr("id");
                 if (!self.layouts.hasOwnProperty(id)) {
                     self.layouts[id] = {};
@@ -37,7 +39,8 @@
             editors.on('click', '.button.remove', self.removeContainer);
             editors.on('click', '.button.contents', self.editContainerContents);
             editors.on('click', '.button.flip', self.flipContainer);
-            editors.append(self.masterButtons);
+            editors.on('click', '.button.save', self.save);
+            editors.append(self.masterButtons + "<button class='button button-small save'>Save</button>");
         },
 
         /**
@@ -58,39 +61,20 @@
         },
 
         updateOrder: function(event, ui) {
-            console.log(event);
-            console.log(ui);
             var item = $(ui.item[0]);
-            var parent_id = item.parent().closest(".layout_container").prop("id").replace("layout_container_", "");
+            var info = self.getContainerInfo(item);
+
             var order = [];
-            var layout_id = item.closest(".layout_editor").prop("id");
+            // get the new order
             item.parent().find(".layout_container").each(function(){
                 order.push($(this).prop("id").replace("layout_container_", ""));
             });
             console.log('changing order from:');
             console.log(self.layouts);
-            self.executeOnParent(self.layouts[layout_id], parent_id, self.setOrder, order)
+            // update the order internally
+            self.setOrder(info.container, order)
             console.log('to:');
             console.log(self.layouts);
-        },
-
-        executeOnParent: function(container, parent_id, callback, ...params) {
-            if (container.id == parent_id) {
-                // If this is the correct container, execute the callback
-                callback(container, ...params)
-                return true;
-            }
-            // keep digging ...
-            for (var i in container.containers) {
-                // see if this has other containers to be sorted
-                if (container.containers[i].type === "horizontal" || container.containers[i].type === "vertical") {
-                    // if they were sorted, we can stop looking
-                    if (self.executeOnParent(container.containers[i], parent_id, callback, params)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
         },
 
         /**
@@ -142,31 +126,36 @@
             return self.lastId++;
         },
 
-        save: function(layout) {
-            structure = JSON.stringify(self.layouts[layout]);
+        save: function(e) {
+            var target = $(e.target);
+            var layout_id = target.closest(".layout_editor").prop("id");
+            structure = JSON.stringify(self.layouts[layout_id]);
+            var db_layout_id = self.layouts[layout_id].hasOwnProperty('layout_id') ? self.layouts[layout_id].layout_id : 0;
             $.ajax({
                 url: "/api/layouts",
                 data: {
                     "structure": structure,
-                    "id": self.layouts[layout]["id"]
+                    "id": db_layout_id,
+                    "action": "save"
                 },
+                method: 'POST',
+                dataType: 'json'
             });
         },
 
         addContainerToLayout: function(container) {
-            // self.buildSub(containers, self.layouts[id].type, self.layouts[id].containers, 0);
             var newChild = {
                 type: 'content',
                 value: '',
                 id: self.getNewId()
             };
             container.containers.push(newChild);
-            var containerElement = self.getLayoutContainer(container.id).children('.content');
+            var containerElement = self.getContainerElement(container.id).children('.content');
             var depth = containerElement.parentsUntil('.layout_editor', '.content').length;
             self.addChildElement(containerElement, newChild, 'content', depth);
         },
 
-        getLayoutContainer: function(id) {
+        getContainerElement: function(id) {
             if (self.layouts.hasOwnProperty(id)) {
                 return $('#' + id);
             } else {
@@ -175,26 +164,63 @@
         },
 
         addContainer: function(e) {
-            var target = $(e.target);
-            var parent_id = target.closest(".layout_container,.layout_editor").prop("id").replace("layout_container_", "");
-            var layout_id = target.closest(".layout_editor").prop("id");
-            self.executeOnParent(self.layouts[layout_id], parent_id, self.addContainerToLayout)
+            var info = self.getContainerInfo(e.target);
+            self.addContainerToLayout(info.container);
         },
         removeContainer: function(e) {
             console.log(e);
         },
+
         editContainerContents: function(e) {
             console.log(e);
+            var info = self.getContainerInfo(e.target);
+            lightning.dialog.setContent("<h3>Container Contents</h3>" +
+                "<div>" +
+                "<select>" +
+                "<option value='content' " + (info.container.type == "content" ? "selected=true" : '') + ">Text / HTML</option>" +
+                "<option value='horizontal' " + (info.container.type == "horizontal" ? "selected=true" : '') + ">Columns</option>" +
+                "<option value='vertical' " + (info.container.type == "vertical" ? "selected=true" : '') + ">Rows</option>" +
+                "</select>" +
+                "<button onclick='(function(){lightning.modules.layouts.setContent(\"" + info.container_id + "\", \"" +info.parent_id + "\")})()'>Save</button>" +
+                "</div>");
         },
+
+        setContent: function(layout_id, parent_id) {
+            var value = $('#dialog_box_inner').find("select").val();
+            var container = self.getContainer(self.layouts[layout_id], parent_id);
+            if (container.type == value) {
+                // The type hasn't changed
+                return;
+            }
+            var elem = self.getContainerElement(container.id);
+            var depth = elem.parentsUntil('.layout_editor', '.content').length;
+            if (container.type == 'content' && (value=="horizontal" || value=="vertical")) {
+                // switching from content to vertical or horizontal
+                container.type = value;
+                container.containers = [];
+                elem.find(".content").empty();
+                self.buildSub(elem, value, [], depth);
+                self.addContainerToLayout(container);
+            } else if ((container.type == "horizontal" || container.type == "vertical") && value == "content") {
+                // switching from columns to content
+                container.type = value;
+                delete container.containers;
+                elem.find(".content").empty();
+                self.buildSub(elem, value, {type: "content"}, depth);
+            } else {
+                // just switching orientation
+                self.executeFlipContainer(container);
+            }
+            lightning.dialog.hide();
+        },
+
         /**
          * Change a container from horizontal to vertical or reverse
          * @param e
          */
         flipContainer: function(e) {
-            var target = $(e.target);
-            var parent_id = target.closest(".layout_container,.layout_editor").prop("id").replace("layout_container_", "");
-            var layout_id = target.closest(".layout_editor").prop("id");
-            self.executeOnParent(self.layouts[layout_id], parent_id, self.executeFlipContainer)
+            var info = self.getContainerInfo(e.target);
+            self.executeFlipContainer(info.container);
         },
         executeFlipContainer: function(container) {
             switch (container.type) {
@@ -205,10 +231,41 @@
                     container.type = 'horizontal';
                     break;
             }
-            var contentElement = self.getLayoutContainer(container.id).children('.content');
+            var contentElement = self.getContainerElement(container.id).children('.content');
             contentElement.removeClass('container_type_horizontal').removeClass('container_type_vertical');
             contentElement.addClass('container_type_' + container.type);
             self.resetSortable(contentElement.closest('.layout_editor'));
+        },
+
+
+        getContainerInfo: function(target) {
+            target = $(target);
+            var parent_id = target.closest(".layout_container,.layout_editor").prop("id").replace("layout_container_", "");
+            var layout_id = target.closest(".layout_editor").prop("id");
+            var container = self.getContainer(self.layouts[layout_id], parent_id);
+            return {
+                parent_id: parent_id,
+                container_id: layout_id,
+                container: container,
+            };
+        },
+        getContainer: function(container, parent_id) {
+            if (container.id == parent_id) {
+                // If this is the correct container, execute the callback
+                return container;
+            }
+            // keep digging ...
+            if (container.type === "horizontal" || container.type === "vertical") {
+                for (var i in container.containers) {
+                    // if they were sorted, we can stop looking
+                    found = self.getContainer(container.containers[i], parent_id);
+                    if (found !== false) {
+                        return found;
+                    }
+                }
+            }
+            return false;
         }
+
     };
 }());
